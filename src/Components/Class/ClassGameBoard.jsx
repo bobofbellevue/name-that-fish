@@ -3,43 +3,55 @@ import "./styles/game-board.css";
 
 export class ClassGameBoard extends Component {
   state = {
-    name: "",
-    url: this.props.FishData.getNextFish()?.url,
+    currentFishName: "",
   };
 
   onSubmitFish = (e) => {
     e.preventDefault();
-    this.props.FishData.makeFishGuess(this.state.name);
-    const nextFish = this.props.FishData.getNextFish();
-    this.setState({ name: "", url: nextFish?.url });
-    this.props.setFishCounts(
-      this.props.FishData.getCorrectFishCount(),
-      this.props.FishData.getIncorrectFishCount()
-    );
-    this.props.setGameOver(nextFish === undefined);
+    if (
+      this.state.currentFishName ===
+      this.props.fishes[this.props.correctFish + this.props.incorrectFish].name
+    ) {
+      this.props.setCorrectFish(this.props.correctFish + 1);
+    } else {
+      this.props.setIncorrectFish(this.props.incorrectFish + 1);
+    }
+    this.setState({ currentFishName: "" });
   };
 
   onChangeFishName = (e) => {
-    this.setState((previousState) => {
-      return { ...previousState, name: e.target.value };
-    });
+    this.setState({ currentFishName: e.target.value });
   };
 
   render() {
     return (
       <div id="game-board">
         <div id="fish-container">
-          <img src={this.state.url} alt={this.state.name} />
+          <img
+            src={
+              this.props.fishes[
+                this.props.correctFish + this.props.incorrectFish
+              ].url
+            }
+            alt={
+              this.props.fishes[
+                this.props.correctFish + this.props.incorrectFish
+              ].name
+            }
+          />
         </div>
         <form id="fish-guess-form" onSubmit={this.onSubmitFish}>
           <label htmlFor="fish-guess">What kind of fish is this?</label>
           <input
             type="text"
             name="fish-guess"
-            value={this.state.name}
+            value={this.state.currentFishName}
             onChange={this.onChangeFishName}
           />
-          <input type="submit" disabled={this.state.name ? false : true} />
+          <input
+            type="submit"
+            disabled={this.state.currentFishName ? false : true}
+          />
         </form>
       </div>
     );

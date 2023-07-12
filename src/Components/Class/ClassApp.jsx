@@ -1,43 +1,41 @@
-import { Component, useState } from "react";
+import { Component } from "react";
 import { ClassScoreBoard } from "./ClassScoreBoard";
 import { ClassGameBoard } from "./ClassGameBoard";
 import { ClassFinalScore } from "./ClassFinalScore";
-import { FishData } from "./FishData.js";
+import { fishes } from "./FishData.js";
 
 export class ClassApp extends Component {
   state = {
-    incorrectFish: 0,
     correctFish: 0,
-    gameOver: false,
+    incorrectFish: 0,
   };
 
-  setFishCounts = (correct, incorrect) => {
+  setCorrectFish = (correct) => {
     this.setState({ correctFish: correct });
-    this.setState({ incorrectFish: incorrect });
   };
 
-  setGameOver = (status) => {
-    this.setState({ gameOver: status });
+  setIncorrectFish = (incorrect) => {
+    this.setState({ incorrectFish: incorrect });
   };
 
   render() {
     return (
       <>
         <ClassScoreBoard
-          FishData={FishData}
+          fishes={fishes}
           correctFish={this.state.correctFish}
           incorrectFish={this.state.incorrectFish}
         />
-        {!this.state.gameOver && (
+        {this.state.correctFish + this.state.incorrectFish < 4 && (
           <ClassGameBoard
-            FishData={FishData}
-            setFishCounts={(correct, incorrect) =>
-              this.setFishCounts(correct, incorrect)
-            }
-            setGameOver={this.setGameOver}
+            fishes={fishes}
+            correctFish={this.state.correctFish}
+            incorrectFish={this.state.incorrectFish}
+            setCorrectFish={this.setCorrectFish}
+            setIncorrectFish={this.setIncorrectFish}
           />
         )}
-        {this.state.gameOver && (
+        {this.state.correctFish + this.state.incorrectFish >= 4 && (
           <ClassFinalScore
             correctFish={this.state.correctFish}
             incorrectFish={this.state.incorrectFish}
